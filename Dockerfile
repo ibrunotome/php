@@ -30,10 +30,8 @@ zip \
 && docker-php-ext-install \
 bcmath \
 gd \
-json \
 opcache \
 pcntl \
-pdo \
 pdo_pgsql \
 pgsql \
 sockets \
