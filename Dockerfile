@@ -19,6 +19,7 @@ nginx \
 nginx-extras \
 supervisor \
 unzip \
+vim \
 wget \
 zip \
 && apt autoremove \
