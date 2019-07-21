@@ -1,5 +1,7 @@
 FROM php:7.3
 
+WORKDIR /var/www
+
 RUN rm -rf /var/www/html \
   && apt-get update -y \
   && apt-get install -y \
