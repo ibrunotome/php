@@ -1,4 +1,6 @@
-FROM php:7.3
+FROM php:7.3-fpm
+
+WORKDIR /var/www
 
 RUN rm -rf /var/www/html \
   && apt-get update -y \
@@ -11,6 +13,9 @@ RUN rm -rf /var/www/html \
   libjpeg-dev \
   libpng-dev \
   libzip-dev \
+  nginx \
+  nginx-extras \
+  supervisor \
   unzip \
   vim \
   wget \
