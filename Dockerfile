@@ -17,8 +17,8 @@ RUN rm -rf /var/www/html \
   vim \
   wget \
   zip \
-  && apt autoremove \
-  && apt clean \
+  && apt autoremove -y \
+  && apt clean - y \
   && pecl install redis \
   && pecl install decimal \
   && pecl install stackdriver_debugger-alpha \
