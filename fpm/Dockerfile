@@ -13,8 +13,6 @@ RUN rm -rf /var/www/html \
   libjpeg-dev \
   libpng-dev \
   libzip-dev \
-  nginx \
-  nginx-extras \
   supervisor \
   unzip \
   vim \

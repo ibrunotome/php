@@ -25,6 +25,7 @@ RUN rm -rf /var/www/html \
   && docker-php-ext-configure gd --with-png-dir=/usr/include --with-jpeg-dir=/usr/include \
   && docker-php-ext-install \
   bcmath \
+  exif \
   gd \
   opcache \
   pcntl \
