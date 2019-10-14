@@ -8,6 +8,7 @@ RUN rm -rf /var/www/html \
   autoconf \
   build-essential \
   curl \
+  git \
   libmpdec-dev \
   libpq-dev \
   libjpeg-dev \
