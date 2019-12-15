@@ -26,6 +26,8 @@ RUN rm -rf /var/www/html \
   && pecl install redis \
   && pecl install decimal \
   && pecl install stackdriver_debugger-alpha \
+  && pecl install grpc \
+  && pecl install protobuf \
   && docker-php-ext-configure gd --with-png-dir=/usr/include --with-jpeg-dir=/usr/include \
   && docker-php-ext-install \
   bcmath \
