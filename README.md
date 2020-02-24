@@ -5,7 +5,7 @@
 - You have to copy nginx.conf to /etc/nginx/nginx.conf (if you using an image with nginx)
 - You have to copy supervisord.conf to /etc/supervisor/conf.d/supervisord.conf if you're stating multiple programs at same time
 
-## fpm
+### fpm
 
 ```Dockerfile
 FROM ibrunotome/php:7.4-fpm
