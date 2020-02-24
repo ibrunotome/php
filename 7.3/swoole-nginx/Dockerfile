@@ -5,5 +5,4 @@ WORKDIR /var/www
 RUN apt-get update -y \
   && apt-get install -y \
   nginx \
-  nginx-extras \
-  supervisor
+  nginx-extras
