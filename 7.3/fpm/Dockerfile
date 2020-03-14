@@ -52,5 +52,5 @@ RUN rm -rf /var/www/html \
   && make -j "$(nproc)" \
   && make install \
   && cd ../../ \
-  && rm -rf /opencensus-php \
+  && rm -rf ./opencensus-php \
   && docker-php-ext-enable opencensus
