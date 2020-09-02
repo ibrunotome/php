@@ -20,12 +20,14 @@ RUN rm -rf /var/www/html \
   vim \
   wget \
   zip \
+  zlib1g-dev \
   && apt autoremove \
   && apt clean \
   && pecl install decimal \
   && pecl install grpc \
   && pecl install protobuf \
   && pecl install redis \
+  && docker-php-ext-configure gd --enable-gd --with-jpeg \
   && docker-php-ext-install \
   bcmath \
   exif \
@@ -43,13 +45,4 @@ RUN rm -rf /var/www/html \
   && curl -sS https://getcomposer.org/installer | php \
   && mv composer.phar /usr/local/bin/composer \
   && composer self-update --clean-backups \
-  && composer global require hirak/prestissimo \
-  && git clone https://github.com/census-instrumentation/opencensus-php \
-  && cd opencensus-php/ext \
-  && phpize \
-  && ./configure --enable-opencensus \
-  && make -j "$(nproc)" \
-  && make install \
-  && cd ../../ \
-  && rm -rf ./opencensus-php \
-  && docker-php-ext-enable opencensus
+  && composer global require hirak/prestissimo
