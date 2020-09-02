@@ -46,3 +46,4 @@ RUN rm -rf /var/www/html \
   && mv composer.phar /usr/local/bin/composer \
   && composer self-update --clean-backups \
   && composer global require hirak/prestissimo
+  
