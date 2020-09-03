@@ -1,11 +1,11 @@
 ## Example of usage
 
+The docker-compose.develop.yml is an example of develop environment with individual containers for nginx/fpm/queue/schedule/redis/mysql
+
+### fpm + nginx
+
 - You have to copy php.ini with your desired settings to `/usr/local/etc/php`
 - You have to copy www.conf to /usr/local/etc/php-fpm.d/www.conf(if you using an image with fpm)
-- You have to copy nginx.conf to /etc/nginx/nginx.conf (if you using an image with nginx)
-- You have to copy supervisord.conf to /etc/supervisor/conf.d/supervisord.conf if you're stating multiple programs at same time
-
-### fpm
 
 ```Dockerfile
 FROM ibrunotome/php:7.4-fpm
@@ -15,47 +15,31 @@ ARG COMPOSER_FLAGS
 WORKDIR /var/www
 
 COPY . /var/www
-COPY php.ini /usr/local/etc/php/php.ini
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN composer install $COMPOSER_FLAGS \
-    && chown -R www-data:www-data /var/www
+    && mv php.ini /usr/local/etc/php/php.ini \
+    && mv www.conf /usr/local/etc/php-fpm.d/www.conf \
+    && chown -R 0:www-data /var/www \
+    && find /var/www -type f -exec chmod 664 {} \; \
+    && find /var/www -type d -exec chmod 775 {} \; \
+    && chgrp -R www-data public/cache-html storage bootstrap/cache \
+    && chmod -R ug+rwx public/cache-html storage bootstrap/cache
 
 CMD ["/usr/local/sbin/php-fpm"]
 
 EXPOSE 9000
 ```
 
-### fpm with nginx as reverse proxy
-
-```Dockerfile
-FROM ibrunotome/php:7.4-fpm
-
-ARG COMPOSER_FLAGS
-
-WORKDIR /var/www
-
-COPY . /var/www
-COPY php.ini /usr/local/etc/php/php.ini
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN composer install $COMPOSER_FLAGS \
-    && chown -R www-data:www-data /var/www
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-
-EXPOSE 9000
-```
-
 ### swoole
+
+- You have to copy php.ini with your desired settings to `/usr/local/etc/php`
 
 ```Dockerfile
 FROM ibrunotome/php:7.4-swoole
 
-ARG COMPOSER_FLAGS='--prefer-dist --optimize-autoloader'
+ARG COMPOSER_FLAGS
+
+WORKDIR /var/www
 
 COPY . /var/www
 COPY php.ini /usr/local/etc/php
@@ -69,24 +53,6 @@ EXPOSE 8080
 
 You have to copy php.ini with your desired settings to `/usr/local/etc/php`
 
-### swoole with nginx as reverse proxy
-
-```Dockerfile
-FROM ibrunotome/php:7.4-swoole-nginx
-
-ARG COMPOSER_FLAGS='--prefer-dist --optimize-autoloader'
-
-COPY . /var/www
-COPY php.ini /usr/local/etc/php
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY nginx.conf /etc/nginx/nginx.conf
-
-RUN composer install $COMPOSER_FLAGS
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-
-EXPOSE 8080
-```
 
 ## Enabling Xdebug
 
