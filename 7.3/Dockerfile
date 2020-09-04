@@ -27,7 +27,7 @@ RUN rm -rf /var/www/html \
   && pecl install grpc \
   && pecl install protobuf \
   && pecl install redis \
-  && docker-php-ext-configure gd --enable-gd --with-jpeg \
+  && docker-php-ext-configure gd --with-png-dir=/usr/include --with-jpeg-dir=/usr/include \
   && docker-php-ext-install \
   bcmath \
   exif \
