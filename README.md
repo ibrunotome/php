@@ -1,3 +1,7 @@
+# Disclaimer
+
+This is for my personal use, dependencies can come and go at any time 🤷‍♂️
+
 ## Example of usage
 
 The docker-compose.develop.yml is an example of develop environment with individual containers for nginx/fpm/queue/schedule/redis/mysql
