@@ -15,13 +15,12 @@ RUN rm -rf /var/www/html \
   libjpeg-dev \
   libpng-dev \
   libzip-dev \
-  supervisor \
   unzip \
   vim \
   wget \
   zip \
   zlib1g-dev \
-  && apt autoremove \
+  && apt autoremove -y \
   && apt clean \
   && pecl install redis \
   && docker-php-ext-configure gd --enable-gd --with-jpeg \
@@ -37,5 +36,4 @@ RUN rm -rf /var/www/html \
   pgsql \
   zip \
   && curl -sS https://getcomposer.org/installer | php \
-  && mv composer.phar /usr/local/bin/composer \
-  && composer self-update --clean-backups
+  && mv composer.phar /usr/local/bin/composer
