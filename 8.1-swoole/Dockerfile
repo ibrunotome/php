@@ -1,4 +1,4 @@
-FROM openswoole/swoole:4.10.0-php8.1-alpine
+FROM openswoole/swoole:4.11.1-php8.1-alpine
 
 RUN set -ex \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \

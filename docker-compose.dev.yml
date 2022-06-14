@@ -1,0 +1,80 @@
+version: '3'
+services:
+  nginx:
+    image: macbre/nginx-http3:latest
+    restart: always
+    volumes:
+      - ./public:/var/www/public
+      - ./nginx.develop.conf:/etc/nginx/nginx.conf
+    networks:
+      - dev
+    ports:
+      - '80:80'
+    depends_on:
+      - app
+
+  app:
+    image: ibrunotome/php:8.1.1-swoole
+    command: php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000 --watch
+    ports:
+      - '8000:8000'
+    volumes:
+      - '.:/var/www'
+      - './php.ini:/usr/local/etc/php/php.ini'
+    networks:
+      - dev
+    depends_on:
+      - pgsql
+      - redis
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  queue:
+    image: ibrunotome/php:8.1.1-swoole
+    command: php artisan horizon
+    volumes:
+      - '.:/var/www'
+      - './php.ini:/usr/local/etc/php/php.ini'
+    networks:
+      - dev
+    depends_on:
+      - pgsql
+      - redis
+
+  pgsql:
+    image: postgres:14-alpine
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+      PGPASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      - 'devpgsql:/var/lib/postgresql/data'
+    networks:
+      - dev
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USERNAME}' ]
+
+  redis:
+    image: library/redis:7.0.2-alpine
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - 'devredis:/data'
+    networks:
+      - dev
+    healthcheck:
+      test: [ 'CMD', 'redis-cli', 'ping' ]
+
+networks:
+  dev:
+    driver: bridge
+volumes:
+  devpgsql:
+    driver: local
+  devredis:
+    driver: local
+  devmeilisearch:
+    driver: local
