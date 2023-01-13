@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: macbre/nginx-http3:latest
+    image: macbre/nginx-http3:1.23.2
     restart: always
     volumes:
       - ./public:/var/www/public
@@ -14,7 +14,7 @@ services:
       - app
 
   app:
-    image: ibrunotome/php:8.1.1-swoole
+    image: ibrunotome/php:8.2-swoole
     command: php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000 --watch
     ports:
       - '8000:8000'
@@ -30,7 +30,7 @@ services:
       - 'host.docker.internal:host-gateway'
 
   queue:
-    image: ibrunotome/php:8.1.1-swoole
+    image: ibrunotome/php:8.2-swoole
     command: php artisan horizon
     volumes:
       - '.:/var/www'

@@ -21,7 +21,7 @@ WORKDIR /app
 COPY . .
 RUN yarn install && yarn prod
 
-FROM ibrunotome/php:8.1.1-swoole
+FROM ibrunotome/php:8.2-swoole
 WORKDIR /var/www
 
 COPY --from=backend /app /var/www
