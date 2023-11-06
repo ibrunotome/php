@@ -1,4 +1,4 @@
-FROM phpswoole/swoole:5.0.3-php8.2-alpine
+FROM phpswoole/swoole:5.1.0-php8.2-alpine
 
 RUN set -ex \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
@@ -7,15 +7,19 @@ RUN set -ex \
     && pecl install pcov \
     && docker-php-ext-enable pcov \
     && apk del .build-deps \
-    && apk --no-cache add nodejs supervisor postgresql-libs postgresql-dev \
+    && apk --no-cache add nodejs postgresql-libs postgresql-dev \
+    && docker-php-ext-configure intl \
     && docker-php-ext-install \
+    intl \
     pgsql \
     pdo_pgsql \
     pdo_mysql \
     pcntl \
     bcmath \
     opcache \
-    && apk del postgresql-dev
+    && docker-php-ext-enable intl \
+    && apk del postgresql-dev \
+    && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
 
 EXPOSE 8000
 

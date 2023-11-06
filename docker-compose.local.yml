@@ -1,18 +1,5 @@
 version: '3'
 services:
-  nginx:
-    image: macbre/nginx-http3:1.23.2
-    restart: always
-    volumes:
-      - ./public:/var/www/public
-      - ./nginx.develop.conf:/etc/nginx/nginx.conf
-    networks:
-      - dev
-    ports:
-      - '80:80'
-    depends_on:
-      - app
-
   app:
     image: ibrunotome/php:8.2-swoole
     command: php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000 --watch
@@ -22,7 +9,7 @@ services:
       - '.:/var/www'
       - './php.ini:/usr/local/etc/php/php.ini'
     networks:
-      - dev
+      - local
     depends_on:
       - pgsql
       - redis
@@ -36,13 +23,13 @@ services:
       - '.:/var/www'
       - './php.ini:/usr/local/etc/php/php.ini'
     networks:
-      - dev
+      - local
     depends_on:
       - pgsql
       - redis
 
   pgsql:
-    image: postgres:14-alpine
+    image: postgres:16-alpine
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
@@ -51,9 +38,9 @@ services:
       POSTGRES_USER: '${DB_USERNAME}'
       POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
     volumes:
-      - 'devpgsql:/var/lib/postgresql/data'
+      - 'localpgsql:/var/lib/postgresql/data'
     networks:
-      - dev
+      - local
     healthcheck:
       test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USERNAME}' ]
 
@@ -62,19 +49,19 @@ services:
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
-      - 'devredis:/data'
+      - 'localredis:/data'
     networks:
-      - dev
+      - local
     healthcheck:
       test: [ 'CMD', 'redis-cli', 'ping' ]
 
 networks:
-  dev:
+  local:
     driver: bridge
 volumes:
-  devpgsql:
+  localpgsql:
     driver: local
-  devredis:
+  localredis:
     driver: local
-  devmeilisearch:
+  localmeilisearch:
     driver: local

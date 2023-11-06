@@ -2,31 +2,30 @@
 
 This is for my personal use, dependencies can come and go at any time 🤷‍♂️
 
-## Example of usage
-
-The docker-compose.dev.yml is an example of develop environment with individual containers for nginx/app/queue/redis/pgsql
-
 ```Dockerfile
-FROM composer:2.2.6 AS backend
+FROM --platform=linux/amd64 composer:2.5.5 AS build
 WORKDIR /app
 
-COPY auth.json composer.json composer.lock ./
+COPY composer.json .
+COPY composer.lock .
 RUN composer install --no-dev --no-scripts --ignore-platform-reqs
 
 COPY . .
+RUN rm auth.json && composer dump -a
 
-FROM node:16-alpine as frontend
-WORKDIR /app
+FROM --platform=linux/amd64 ibrunotome/php:8.2-swoole
 
-COPY . .
-RUN yarn install && yarn prod
+ARG ENV_DECRYPT_KEY
+ENV APP_ENV=production
 
-FROM ibrunotome/php:8.2-swoole
 WORKDIR /var/www
 
-COPY --from=backend /app /var/www
-COPY --from=backend /app/php.ini /usr/local/etc/php/php.ini
-COPY --from=frontend /app/public /var/www/public
+COPY --from=build /app /var/www
+COPY --from=build /app/php.ini /usr/local/etc/php/conf.d/user.ini
+
+RUN php artisan view:cache
+RUN php artisan storage:link
+RUN php artisan optimize
 
 EXPOSE 8000
 
