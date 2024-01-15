@@ -1,27 +1,14 @@
-FROM phpswoole/swoole:5.1.1-php8.3-alpine
+FROM phpswoole/swoole:php8.3-alpine
 
-RUN set -ex \
-    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    autoconf \
-    && pecl update-channels \
-    && pecl install pcov \
-    && docker-php-ext-enable pcov \
-    && apk del .build-deps \
-    && apk --no-cache add nodejs postgresql-libs postgresql-dev \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install \
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions bcmath \
     intl \
-    pgsql \
-    pdo_pgsql \
-    pdo_mysql \
-    pcntl \
-    bcmath \
     opcache \
-    && docker-php-ext-enable intl \
-    && apk del postgresql-dev \
-    && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
+    pcntl \
+    pcov \
+    pdo_mysql \
+    pdo_pgsql \
+    redis
 
 EXPOSE 8000
-
-CMD ["php", "artisan", "octane:start", "--host=0.0.0.0", "--port=8000"]
-
