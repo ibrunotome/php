@@ -1,12 +1,12 @@
-version: '3'
+version: '3.6'
 services:
   app:
-    image: ibrunotome/php:8.2-swoole
-    command: php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000 --watch
+    image: ibrunotome/php:8.3.6-frankenphp
+    command: php artisan octane:frankenphp --host=0.0.0.0 --port=8000 --max-requests=1
     ports:
-      - '8000:8000'
+      - '80:8000'
     volumes:
-      - '.:/var/www'
+      - '.:/app'
       - './php.ini:/usr/local/etc/php/php.ini'
     networks:
       - local
@@ -17,7 +17,7 @@ services:
       - 'host.docker.internal:host-gateway'
 
   queue:
-    image: ibrunotome/php:8.2-swoole
+    image: ibrunotome/php:8.3.6-frankenphp
     command: php artisan horizon
     volumes:
       - '.:/var/www'
@@ -45,7 +45,7 @@ services:
       test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USERNAME}' ]
 
   redis:
-    image: library/redis:7.0.2-alpine
+    image: library/redis:7.2.3-alpine
     ports:
       - '${FORWARD_REDIS_PORT:-6379}:6379'
     volumes:
