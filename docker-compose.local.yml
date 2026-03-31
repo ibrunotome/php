@@ -1,7 +1,6 @@
-version: '3.6'
 services:
   app:
-    image: ibrunotome/php:8.3.6-frankenphp
+    image: ibrunotome/php:8.5.4-frankenphp
     command: php artisan octane:frankenphp --host=0.0.0.0 --port=8000 --max-requests=1
     ports:
       - '80:8000'
@@ -17,7 +16,7 @@ services:
       - 'host.docker.internal:host-gateway'
 
   queue:
-    image: ibrunotome/php:8.3.6-frankenphp
+    image: ibrunotome/php:8.5.4-frankenphp
     command: php artisan horizon
     volumes:
       - '.:/var/www'
@@ -29,7 +28,7 @@ services:
       - redis
 
   pgsql:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
